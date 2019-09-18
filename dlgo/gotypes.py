@@ -2,7 +2,7 @@ from collections import namedtuple
 import enum
 
 
-class Player:
+class Player(enum.Enum):
     black = 1
     white = 2
 

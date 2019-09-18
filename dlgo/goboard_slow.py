@@ -28,16 +28,16 @@ class Move():
 
 
 class GoString():
-    def __init__(self, color, stones, liberities):
+    def __init__(self, color, stones, liberties):
         self.color = color
-        self.stones = stones
-        self.liberities = liberities
+        self.stones = set(stones)
+        self.liberties = set(liberties)
 
     def remove_liberty(self, point):
-        self.liberities.remove(point)
+        self.liberties.remove(point)
 
     def add_liberty(self, point):
-        self.liberities.add(point)
+        self.liberties.add(point)
 
     def merged_with(self, go_string):
         assert go_string.color == self.color
@@ -45,18 +45,17 @@ class GoString():
         return GoString(
             self.color,
             combined_stones,
-            (self.liberities | go_string.liberities) - combined_stones
-        )
+            (self.liberties | go_string.liberties) - combined_stones)
 
     @property
-    def num_liberities(self):
-        return len(self.liberities)
+    def num_liberties(self):
+        return len(self.liberties)
 
     def __eq__(self, other):
         return isinstance(other, GoString) and \
             self.color == other.color and \
             self.stones == other.stones and \
-            self.liberities == other.liberities
+            self.liberties == other.liberties
 
 
 class Board():
@@ -70,20 +69,20 @@ class Board():
         assert self._grid.get(point) is None
         adjacent_same_color = []
         adjacent_opposite_color = []
-        liberities = []
+        liberties = []
         for neighbor in point.neighbors():
             if not self.is_on_grid(neighbor):
                 continue
             neighbor_string = self._grid.get(neighbor)
             if neighbor_string is None:
-                liberities.append(neighbor)
+                liberties.append(neighbor)
             elif neighbor_string.color == player:
                 if neighbor_string not in adjacent_same_color:
                     adjacent_same_color.append(neighbor_string)
             else:
                 if neighbor_string not in adjacent_opposite_color:
                     adjacent_opposite_color.append(neighbor_string)
-        new_string = GoString(player, [point], liberities)
+        new_string = GoString(player, [point], liberties)
         for same_color_string in adjacent_same_color:
             new_string = new_string.merged_with(same_color_string)
         for new_string_point in new_string.stones:
@@ -159,7 +158,7 @@ class GameState():
         next_board = copy.deepcopy(self.board)
         next_board.place_stone(player, move.point)
         new_string = next_board.get_go_string(move.point)
-        return new_string.num_liberities == 0
+        return new_string.num_liberties == 0
 
     @property
     def situation(self):
@@ -183,8 +182,7 @@ class GameState():
             return False
         if move.is_pass or move.is_resign:
             return True
-        return(
+        return (
             self.board.get(move.point) is None and
             not self.is_move_self_capture(self.next_player, move) and
-            not self.does_move_violate_ko(self.next_player, move)
-        )
+            not self.does_move_violate_ko(self.next_player, move))
