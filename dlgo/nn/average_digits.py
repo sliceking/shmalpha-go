@@ -46,7 +46,6 @@ print(predict(x_3, W, b))
 print(predict(x_18, W, b))
 
 
-
 def evaluate(data, digit, threshold, W, b):
     # as evaluating metric we choose accuracy, the ratio of correct predictions among all.
     total_samples = 1.0 * len(data)
@@ -60,9 +59,10 @@ def evaluate(data, digit, threshold, W, b):
             correct_predictions += 1
     return correct_predictions / total_samples
 
+
 # accuracy on training data of our simple model is 78%
 evaluate(data=train, digit=8, threshold=0.5, W=W, b=b)
-#accuracy on test is sloghtly lower, at 77%
+# accuracy on test is sloghtly lower, at 77%
 evaluate(data=test, digit=8, threshold=0.5, W=W, b=b)
 
 eight_test = [x for x in test if np.argmax(x[1]) == 8]

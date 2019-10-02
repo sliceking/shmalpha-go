@@ -73,6 +73,7 @@ class Layer(object):
 
     def descrie(self):
         # layer implementations can print their properties
+        raise NotImplementedError
 
 
 class ActivationLayer(Layer):
@@ -85,3 +86,16 @@ class ActivationLayer(Layer):
 
     def forward(self):
         data = self.get_forward_input()
+        # The forward pass is simply applying the sigmoid to the input data
+        self.output_data = sigmoid(data)
+
+    def backward(self):
+        delta = self.get_backward_input()
+        data = self.get_forward_input()
+        # The backward pass is an element-wise multiplication of the error term with the sigmoid derivative evaluated at the input to this layer
+        self.output_delta = delta * sigmoid_prime(data)
+
+    def describe(self):
+        print("|-- " + self.__class__.__name__)
+        print("  |-- dimensions: ({},{})"
+              .format(self.input_dim, self.output_dim))
