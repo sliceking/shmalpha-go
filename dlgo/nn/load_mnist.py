@@ -38,4 +38,3 @@ def load_data():
     train_data, test_data = load_data_impl()
     # We discard validation data here and reshape the other two data sets.
     return shape_data(train_data), shape_data(test_data)
-
